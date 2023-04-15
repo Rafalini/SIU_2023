@@ -49,9 +49,22 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
         self.px_meter_ratio=self.tapi.pixelsToScale()       # skala w pikselach na metr
         self.routes={}
         self.agents={}
-        # TODO STUDENCI załadowanie tras agentów do self.routes
+
+        # TODO STUDENCI załadowanie tras agentów do self.routes     DONE!
         with open(routes_fname,encoding='utf-8-sig') as f:  # załadowanie tras agentów
-            ...
+
+            csv_reader = csv.reader(f)
+            sequences=[]
+
+            for row in csv_reader:
+                split_row=row[0].split(';')
+                split_row_ints = list(map(int, split_row))      # Map items in list from 'str' to 'int' 
+                route_id=split_row_ints[0]
+                sequences.append(split_row_ints[1:])
+
+            self.routes[route_id]=sequences
+            f.close()
+
         # utworzenie agentów-żółwi skojarzonych z trasami
         cnt=0
         for route,sections in self.routes.items():          # dla kolejnych tras
