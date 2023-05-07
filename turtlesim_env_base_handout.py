@@ -119,6 +119,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
             if sections[tidx] == 'default':                   # żółw pozycjonowany wg csv
                 sec_id = agent.sec_id
             # żółw pozycjonowany w losowym segmencie jego trasy
+            # żółw pozycjonowany w losowym segmencie jego trasy
             elif sections[tidx] == 'random':
                 # TODO STUDENCI - chyba Done
                 # losowanie obszaru proporcjonalnie do liczby planowanych żółwi w obszarze
@@ -132,15 +133,15 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
                 rand_sec = random.randint(0, 7)
 
                 # Sprawdzenie liczby żółwi w wylosowanym obszarze
-                turtle_count = sum(
-                    [1 for t in self.agents.values() if t.sec_id == sec_id])
-
-                # Jeśli liczba żółwi w obszarze jest większa lub równa maksymalnej liczbie,
-                # losuj kolejny obszar aż do znalezienia obszaru z mniejszą liczbą żółwi
-                while turtle_count >= max_numb:
-                    rand_sec = random.randint(0, 7)
-                    turtle_count = sum(
-                        [1 for t in self.agents.values() if t.sec_id == sec_id])
+                if tidx != 0:
+                    turtle_count = sum([1 for t in list(self.agents.values())[
+                                       :tidx] if t.section == rand_sec])
+                    # Jeśli liczba żółwi w obszarze jest większa lub równa maksymalnej liczbie,
+                    # losuj kolejny obszar aż do znalezienia obszaru z mniejszą liczbą żółwi
+                    while turtle_count >= max_numb:
+                        rand_sec = random.randint(0, 7)
+                        turtle_count = sum([1 for t in list(self.agents.values())[
+                                           :tidx] if t.section == sec_id])
 
                 # Przypisanie wylosowanego obszaru jako sec_id
                 sec_id = rand_sec
