@@ -1,7 +1,6 @@
 # encoding: utf8
 import abc
 import sys
-import csv
 import signal
 import rospy
 import turtlesim
@@ -10,6 +9,8 @@ import random
 from cv_bridge import CvBridge
 from turtlesim.msg import Pose
 from TurtlesimSIU import TurtlesimSIU
+
+from src.utils import ScenarioReader
 
 
 class TurtleAgent:      # struktura ze stałymi i bieżącymi atrybutami agenta
@@ -61,20 +62,9 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
         self.agents = {}
 
         # TODO STUDENCI załadowanie tras agentów do self.routes     DONE!
-        with open(routes_fname, encoding='utf-8-sig') as f:  # załadowanie tras agentów
-
-            csv_reader = csv.reader(f)
-            sequences = []
-
-            for row in csv_reader:
-                split_row = row[0].split(';')
-                # Map items in list from 'str' to 'int'
-                split_row_ints = list(map(int, split_row))
-                route_id = split_row_ints[0]
-                sequences.append(split_row_ints[1:])
-
-            self.routes[route_id] = sequences
-            f.close()
+        self.routes = ScenarioReader(scenario_file=routes_fname,
+                                     px_meter_ratio=self.px_meter_ratio
+                                    ).to_meters().get_routes()
 
         # utworzenie agentów-żółwi skojarzonych z trasami
         cnt = 0
@@ -87,8 +77,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
                     if agent_cnt is not None and cnt > agent_cnt:                 # ogranicz liczbę tworzonych żółwi
                         return
                     # identyfikator agenta: trasa, segment pocz., nr kolejny
-                    tname = f'{route}_{sec_id}_{seq}'
-                    print(f'Agent {tname}')
+                    tname = f'T_{route}_{sec_id}_{seq}'
                     # utwórz agenta lokalnie i zainicjuj tożsamość
                     ta = TurtleAgent()
                     ta.route = route
@@ -118,7 +107,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
             agent = self.agents[tname]
             if sections[tidx] == 'default':                   # żółw pozycjonowany wg csv
                 sec_id = agent.sec_id
-            # żółw pozycjonowany w losowym segmencie jego trasy
+
             # żółw pozycjonowany w losowym segmencie jego trasy
             elif sections[tidx] == 'random':
                 # TODO STUDENCI - chyba Done
@@ -159,7 +148,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
                 theta = np.arctan2(agent.goal_loc.y-y, agent.goal_loc.x-x)
                 # przestawienie żółwia w losowe miejsce obszaru narodzin
                 self.tapi.setPose(tname, Pose(
-                    x=x, y=y, theta=theta), mode='absolute')
+                    x=x/22, y=y/22, theta=theta), mode='absolute')
                 # odczekać UWAGA inaczej symulator nie zdąży przestawić żółwia
                 rospy.sleep(self.WAIT_AFTER_MOVE)
                 fx, fy, _, _, _, _ = self.get_road(
@@ -173,7 +162,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
                     theta += np.random.uniform(-np.pi /
                                                self.PI_BY, np.pi/self.PI_BY)
                     # obrót żółwia
-                    p = Pose(x=x, y=y, theta=theta)
+                    p = Pose(x=x/22, y=y/22, theta=theta)
                     self.tapi.setPose(tname, p, mode='absolute')
                     agent.pose = p                                # zapamiętanie azymutu, lokalnie
                     rospy.sleep(self.WAIT_AFTER_MOVE)

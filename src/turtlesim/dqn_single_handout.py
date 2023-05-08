@@ -1,9 +1,8 @@
 # encoding: utf8
 import random
-import pickle
 import numpy as np
 from collections import deque
-from tensorflow import keras, constant
+from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Conv3D, Permute, Dense, Flatten
 from turtlesim_env_base import TurtlesimEnvBase
@@ -143,7 +142,7 @@ class DqnSingle():
 
 # przykładowe wywołanie uczenia
 if __name__ == "__main__":
-    env=turtlesim_env_single.provide_env()                      # utworzenie środowiska
+    env= turtlesim_env_single.provide_env()                      # utworzenie środowiska
     env.setup('routes.csv',agent_cnt=1)                         # połączenie z symulatorem
     env.SPEED_FINE_RATE = -5.0                                  # zmiana wybranych parametrów środowiska
     agents=env.reset()                                          # ustawienie agenta
