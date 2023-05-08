@@ -51,8 +51,7 @@ class ScenarioReader:
 		if self.distance_unit == UNIT.METERS:
 			return self
 
-		for sequence in self.sequences:
-			sequence /= self.px_meter_ratio
+		self.sequences = [sequence / self.px_meter_ratio for sequence in self.sequences]
 		self.distance_unit = UNIT.PIXELS
 
 		return self
@@ -64,8 +63,7 @@ class ScenarioReader:
 		if self.distance_unit == UNIT.PIXELS:
 			return self
 
-		for sequence in self.sequences:
-			sequence *= self.px_meter_ratio
+		self.sequences = [sequence * self.px_meter_ratio for sequence in self.sequences]
 		self.distance_unit = UNIT.METERS
 
 		return self

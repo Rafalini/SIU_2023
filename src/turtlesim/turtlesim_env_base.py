@@ -148,7 +148,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
                 theta = np.arctan2(agent.goal_loc.y-y, agent.goal_loc.x-x)
                 # przestawienie żółwia w losowe miejsce obszaru narodzin
                 self.tapi.setPose(tname, Pose(
-                    x=x/22, y=y/22, theta=theta), mode='absolute')
+                    x=x, y=y, theta=theta), mode='absolute')
                 # odczekać UWAGA inaczej symulator nie zdąży przestawić żółwia
                 rospy.sleep(self.WAIT_AFTER_MOVE)
                 fx, fy, _, _, _, _ = self.get_road(
@@ -162,7 +162,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
                     theta += np.random.uniform(-np.pi /
                                                self.PI_BY, np.pi/self.PI_BY)
                     # obrót żółwia
-                    p = Pose(x=x/22, y=y/22, theta=theta)
+                    p = Pose(x=x, y=y, theta=theta)
                     self.tapi.setPose(tname, p, mode='absolute')
                     agent.pose = p                                # zapamiętanie azymutu, lokalnie
                     rospy.sleep(self.WAIT_AFTER_MOVE)
