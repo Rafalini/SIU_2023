@@ -96,7 +96,7 @@ class DqnSingle():
                 self.replay_memory.append((last_state,current_state,control,reward,new_state,done))
                 # bufor ruchów dość duży oraz przyszła pora by podtrenować model
                 if len(self.replay_memory)>=self.REPLAY_MEM_SIZE_MIN and step_cnt%self.TRAIN_EVERY==0:
-                    self.do_train()                                                 # ucz, gdy zgromadzono dość próbek
+                    self.do_train(episode, save_model)                              # ucz, gdy zgromadzono dość próbek
                     train_cnt+=1
                     if train_cnt%self.UPDATE_TARGET_EVERY==0:
                         self.target_model.set_weights(self.model.get_weights())     # aktualizuj model pomocniczy
@@ -112,8 +112,9 @@ class DqnSingle():
                     epsilon=max(self.EPS_MIN,epsilon)                               # podtrzymaj losowość ruchów
             episode_rewards[episode]=episode_rwrd
             print(f' {np.nanmean(episode_rewards[episode-19:episode+1])/20:.2f}')   # śr. nagroda za krok
+
     # przygotowuje próbkę uczącą i wywołuje douczanie modelu
-    def do_train(self, episode=None):
+    def do_train(self, episode, save_model: bool):
         minibatch=random.sample(self.replay_memory,self.MINIBATCH_SIZE)             # losowy podzbiór kroków z historii
         Q0=np.zeros(((self.MINIBATCH_SIZE,self.CTL_DIM)))                           # nagrody krok n wg modelu bieżącego
         Q1target=Q0.copy()                                                          # nagrody krok n+1 wg modelu pomocniczego
@@ -138,6 +139,9 @@ class DqnSingle():
         X=np.stack(X)
         y=np.stack(y)
         self.model.fit(X,y,batch_size=self.TRAINING_BATCH_SIZE,verbose=0,shuffle=False)
+
+        if save_model and episode%self.SAVE_MODEL_EVERY==0:                         # zapisuj co 250 epizodów gdy jest ustawiona flaga
+            self.model.save("../../models/test.h5")                                 # zapisz model w formacie h5
 
 
 # przykładowe wywołanie uczenia
