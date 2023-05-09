@@ -5,8 +5,8 @@ from collections import deque
 from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Conv3D, Permute, Dense, Flatten
-from turtlesim_env_base import TurtlesimEnvBase
-import turtlesim_env_single
+from .turtlesim_env_base import TurtlesimEnvBase
+from .turtlesim_env_single import TurtlesimEnvSingle
 
 class DqnSingle():
     # inicjalizacja parametrami domyślnymi, przechowanie dostarczonej referencji na środowisko symulacyjne
@@ -142,7 +142,7 @@ class DqnSingle():
 
 # przykładowe wywołanie uczenia
 if __name__ == "__main__":
-    env= turtlesim_env_single.provide_env()                      # utworzenie środowiska
+    env = TurtlesimEnvSingle()                                  # utworzenie środowiska
     env.setup('routes.csv',agent_cnt=1)                         # połączenie z symulatorem
     env.SPEED_FINE_RATE = -5.0                                  # zmiana wybranych parametrów środowiska
     agents=env.reset()                                          # ustawienie agenta
