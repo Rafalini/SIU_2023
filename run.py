@@ -1,6 +1,6 @@
 import random
 
-from src.turtlesim import TurtlesimEnvSingle
+from src.turtlesim.turtlesim_env_single import TurtlesimEnvSingle
 
 
 env = TurtlesimEnvSingle()

@@ -8,7 +8,7 @@ from keras.layers import Conv3D, Permute, Dense, Flatten
 from .turtlesim_env_base import TurtlesimEnvBase
 from .turtlesim_env_single import TurtlesimEnvSingle
 
-class DqnSingle():
+class DqnSingle:
     # inicjalizacja parametrami domyślnymi, przechowanie dostarczonej referencji na środowisko symulacyjne
     def __init__(self,env:TurtlesimEnvBase,id_prefix='dqns',seed=42):
         self.env=env
@@ -142,16 +142,3 @@ class DqnSingle():
 
         if save_model and episode%self.SAVE_MODEL_EVERY==0:                         # zapisuj co 250 epizodów gdy jest ustawiona flaga
             self.model.save("../../models/test.h5")                                 # zapisz model w formacie h5
-
-
-# przykładowe wywołanie uczenia
-if __name__ == "__main__":
-    env = TurtlesimEnvSingle()                                  # utworzenie środowiska
-    env.setup('routes.csv',agent_cnt=1)                         # połączenie z symulatorem
-    env.SPEED_FINE_RATE = -5.0                                  # zmiana wybranych parametrów środowiska
-    agents=env.reset()                                          # ustawienie agenta
-    tname=list(agents.keys())[0]                                # 'lista agentów' do wytrenowania
-    dqns=DqnSingle(env)                                         # utworzenie klasy uczącej
-    dqns.make_model()                                           # skonstruowanie sieci neuronowej
-    # dqns.model=load_model('test.h5')                          # albo załadowanie zapisanej wcześniej
-    dqns.train_main(tname,save_model=True)                      # wywołanie uczenia
