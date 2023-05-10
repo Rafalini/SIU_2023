@@ -188,7 +188,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
 
     def get_road(self, tname):
         agent = self.agents[tname]
-        print(tname, agent.color_api)
+        ##print(tname, agent.color_api)
         # bez tego color_api.check() nie wyrabia
         rospy.sleep(self.WAIT_AFTER_MOVE)
         # kolor planszy pod żółwiem
