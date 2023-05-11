@@ -1,6 +1,7 @@
 # encoding: utf8
 import random
 import numpy as np
+from datetime import datetime
 from collections import deque
 from tensorflow import keras
 from keras.models import Sequential
@@ -85,7 +86,8 @@ class DqnSingle:
             episode_rwrd=0                                                          # suma nagród za kroki w epizodzie
 
             if save_model and episode%self.SAVE_MODEL_EVERY==0:                     # zapisuj co 250 epizodów gdy jest ustawiona flaga
-                self.model.save("models/test.h5")                                   # zapisz model w formacie h5
+                current_timestamp = datetime.now().timestamp()
+                self.model.save(f"models/model-E{episode}-{current_timestamp}.h5")  # zapisz model w formacie h5
 
             while True:                                                             # o przerwaniu decyduje do_train()
                 if np.random.random()>epsilon:                                      # sterowanie wg reguły albo losowe
