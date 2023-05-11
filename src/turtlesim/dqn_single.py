@@ -100,7 +100,7 @@ class DqnSingle:
                 self.replay_memory.append((last_state,current_state,control,reward,new_state,done))
                 # bufor ruchów dość duży oraz przyszła pora by podtrenować model
                 if len(self.replay_memory)>=self.REPLAY_MEM_SIZE_MIN and step_cnt%self.TRAIN_EVERY==0:
-                    self.do_train(episode)                              # ucz, gdy zgromadzono dość próbek
+                    self.do_train()                              # ucz, gdy zgromadzono dość próbek
                     train_cnt+=1
                     if train_cnt%self.UPDATE_TARGET_EVERY==0:
                         self.target_model.set_weights(self.model.get_weights())     # aktualizuj model pomocniczy
@@ -143,6 +143,3 @@ class DqnSingle:
         X=np.stack(X)
         y=np.stack(y)
         self.model.fit(X,y,batch_size=self.TRAINING_BATCH_SIZE,verbose=0,shuffle=False)
-
-        if save_model and episode%self.SAVE_MODEL_EVERY==0:                         # zapisuj co 250 epizodów gdy jest ustawiona flaga
-            self.model.save("../../models/test.h5")                                 # zapisz model w formacie h5

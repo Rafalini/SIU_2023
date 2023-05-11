@@ -12,6 +12,7 @@ class TurtlesimEnvSingle(TurtlesimEnvBase):
 	def __init__(self):
 		super().__init__()
 		self.done = False
+		self.out_of_track = False
 
 	def step(self,
 			 actions: Dict[str, Tuple[float, float]],
@@ -34,7 +35,8 @@ class TurtlesimEnvSingle(TurtlesimEnvBase):
 			self._make_smooth_step(tname=tname, speed=action[0], turn=action[1])
 		else:  # skok+obrót
 			self._make_step(tname=tname, pose=init_pose, speed=action[0], turn=action[1])
-
+		self.done = False
+		self.out_of_track = False
 		final_pose = self.tapi.getPose(tname)	# pozycja PO kroku sterowania
 		self.agents[tname].pose = final_pose
 
@@ -76,6 +78,7 @@ class TurtlesimEnvSingle(TurtlesimEnvBase):
 		if abs(fx1) + abs(fy1) < .01 and fa1 == 1:  # wylądowaliśmy poza trasą
 			r4 = self.OUT_OF_TRACK_FINE
 			self.done = True
+			self.out_of_track = True
 
 		reward = fa1 * (r1 + r2) + r3 + r4
 
