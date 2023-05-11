@@ -55,7 +55,7 @@ class DqnSingle():
     def decision(self,the_model,last,cur):
         inp=np.expand_dims(self.inp_stack(last,cur),axis=-1)
         inp=np.expand_dims(inp,axis=0)
-        return the_model.predict(inp,verbose=0).flatten()   # wektor przewidywanych nagród dla sterowań
+        return the_model(inp).numpy().flatten()             # wektor przewidywanych nagród dla sterowań
     # wytworzenie modelu - sieci neuronowej
     def make_model(self):
         N=self.env.GRID_RES                                                         # rozdzielczość rastra
