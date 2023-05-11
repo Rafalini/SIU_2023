@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from tensorflow import keras
+from copy import deepcopy
 
 from src.turtlesim.turtlesim_env_single import TurtlesimEnvSingle
 
@@ -33,15 +34,12 @@ class SimulationRunner:
         env.setup('data/scenario.csv', agent_cnt=1)
         agents = env.reset()
         tname = list(agents.keys())[0]
-        current_state = agents[tname].map
-        for i in range(100):
-            last_state = [i.copy() for i in current_state]
-            current_state = agents[tname].map
+        current_state = deepcopy(agents[tname].map)
+        while not env.out_of_track:
+            last_state = deepcopy(current_state)
             control = np.argmax(self._decision(self.model, last_state, current_state))
-            env.step({tname: self._ctl_2_act(control)})  # noqa
-            if env.out_of_track:
-                break
+            current_state, _, _ = env.step({tname: self._ctl_2_act(control)})  # noqa
 
 
 if __name__ == "__main__":
-    SimulationRunner(model_path='models/test.h5').run_simulation()
+    SimulationRunner(model_path='models/model-E1000-1683836574955.h5').run_simulation()
