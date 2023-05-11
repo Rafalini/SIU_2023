@@ -151,7 +151,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
                 self.tapi.setPose(tname, Pose(
                     x=x, y=y, theta=theta), mode='absolute')
                 # odczekać UWAGA inaczej symulator nie zdąży przestawić żółwia
-                rospy.sleep(self.WAIT_AFTER_MOVE)
+                rospy.sleep(0.1)
                 fx, fy, _, _, _, _ = self.get_road(
                     tname)            # fx, fy \in <-1,1>
                 fo = self.get_map(tname)[6]
@@ -189,7 +189,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
 
     def get_road(self, tname):
         agent = self.agents[tname]
-        print(tname, agent.color_api)
+        ##print(tname, agent.color_api)
         # bez tego color_api.check() nie wyrabia
         rospy.sleep(self.WAIT_AFTER_MOVE)
         # kolor planszy pod żółwiem

@@ -55,7 +55,7 @@ class DqnSingle:
     def decision(self,the_model,last,cur):
         inp=np.expand_dims(self.inp_stack(last,cur),axis=-1)
         inp=np.expand_dims(inp,axis=0)
-        return the_model.predict(inp,verbose=0).flatten()   # wektor przewidywanych nagród dla sterowań
+        return the_model(inp).numpy().flatten()             # wektor przewidywanych nagród dla sterowań
     # wytworzenie modelu - sieci neuronowej
     def make_model(self):
         N=self.env.GRID_RES                                                         # rozdzielczość rastra
@@ -83,6 +83,10 @@ class DqnSingle:
             current_state=self.env.reset(tnames=[tname],sections=['random'])[tname].map
             last_state=[i.copy() for i in current_state]                            # zaczyna od postoju: poprz. stan taki jak obecny
             episode_rwrd=0                                                          # suma nagród za kroki w epizodzie
+
+            if save_model and episode%self.SAVE_MODEL_EVERY==0:                     # zapisuj co 250 epizodów gdy jest ustawiona flaga
+                self.model.save("models/test.h5")                                   # zapisz model w formacie h5
+
             while True:                                                             # o przerwaniu decyduje do_train()
                 if np.random.random()>epsilon:                                      # sterowanie wg reguły albo losowe
                     control=np.argmax(self.decision(self.model,last_state,current_state))
@@ -96,7 +100,7 @@ class DqnSingle:
                 self.replay_memory.append((last_state,current_state,control,reward,new_state,done))
                 # bufor ruchów dość duży oraz przyszła pora by podtrenować model
                 if len(self.replay_memory)>=self.REPLAY_MEM_SIZE_MIN and step_cnt%self.TRAIN_EVERY==0:
-                    self.do_train(episode, save_model)                              # ucz, gdy zgromadzono dość próbek
+                    self.do_train()                              # ucz, gdy zgromadzono dość próbek
                     train_cnt+=1
                     if train_cnt%self.UPDATE_TARGET_EVERY==0:
                         self.target_model.set_weights(self.model.get_weights())     # aktualizuj model pomocniczy
@@ -111,10 +115,10 @@ class DqnSingle:
                     epsilon*=self.EPS_DECAY
                     epsilon=max(self.EPS_MIN,epsilon)                               # podtrzymaj losowość ruchów
             episode_rewards[episode]=episode_rwrd
-            print(f' {np.nanmean(episode_rewards[episode-19:episode+1])/20:.2f}')   # śr. nagroda za krok
+            print(f' Avg Reward: {np.nanmean(episode_rewards[episode-19:episode+1])/20:.2f}')   # śr. nagroda za krok
 
     # przygotowuje próbkę uczącą i wywołuje douczanie modelu
-    def do_train(self, episode, save_model: bool):
+    def do_train(self):
         minibatch=random.sample(self.replay_memory,self.MINIBATCH_SIZE)             # losowy podzbiór kroków z historii
         Q0=np.zeros(((self.MINIBATCH_SIZE,self.CTL_DIM)))                           # nagrody krok n wg modelu bieżącego
         Q1target=Q0.copy()                                                          # nagrody krok n+1 wg modelu pomocniczego
@@ -139,6 +143,3 @@ class DqnSingle:
         X=np.stack(X)
         y=np.stack(y)
         self.model.fit(X,y,batch_size=self.TRAINING_BATCH_SIZE,verbose=0,shuffle=False)
-
-        if save_model and episode%self.SAVE_MODEL_EVERY==0:                         # zapisuj co 250 epizodów gdy jest ustawiona flaga
-            self.model.save("../../models/test.h5")                                 # zapisz model w formacie h5
