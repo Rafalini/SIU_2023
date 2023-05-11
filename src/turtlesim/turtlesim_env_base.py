@@ -6,6 +6,7 @@ import rospy
 import turtlesim
 import numpy as np
 import random
+import cv2 # noqa
 from cv_bridge import CvBridge
 from turtlesim.msg import Pose
 from TurtlesimSIU import TurtlesimSIU
