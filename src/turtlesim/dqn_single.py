@@ -18,7 +18,7 @@ class DqnSingle:
         self.DISCOUNT=.9                    # D dyskonto dla nagrody w następnym kroku
         self.EPS_INIT=1.0                   #*  ε początkowy
         self.EPS_DECAY=.99                  #*E spadek ε
-        self.EPS_MIN=.01                    #*e ε minimalny
+        self.EPS_MIN=.05                    #*e ε minimalny
         self.REPLAY_MEM_SIZE_MAX=20_000     # M rozmiar cache decyzji
         self.REPLAY_MEM_SIZE_MIN=4_00      # m zapełnienie warunkujące uczenie (4_000)
         self.MINIBATCH_SIZE=32              # B liczba decyzji w próbce uczącej
@@ -27,7 +27,7 @@ class DqnSingle:
         self.EPISODES_MAX=4000              #*P liczba epizodów uczących
         self.CTL_DIM=6                      #   liczba możliwych akcji (tj. sterowań, decyzji)
         self.TRAIN_EVERY=4                  # T co ile kroków uczenie modelu szybkozmiennego
-        self.SAVE_MODEL_EVERY=250           #*  co ile epizodów zapisywać model # TODO STUDENCI
+        self.SAVE_MODEL_EVERY=50            #*  co ile epizodów zapisywać model # TODO STUDENCI
         random.seed(seed)
         np.random.seed(seed)
         self.model=None
@@ -93,7 +93,9 @@ class DqnSingle:
             if save_model and episode%self.SAVE_MODEL_EVERY==0:                     # zapisuj co 250 epizodów gdy jest ustawiona flaga
                 # current_timestamp_ms = round(time() * 1000)
                 current_timestamp_ms = datetime.now().strftime("%d_%m__%H:%M:%S")
-                self.model.save(f"models/model-E{episode}-{current_timestamp_ms}.h5")  # zapisz model w formacie h5
+                self.model.save(f"models/model-E{episode}-{current_timestamp_ms}.tf", save_format="tf")  # zapisz model w formacie h5
+                with open(f"models/model-E{episode}-{current_timestamp_ms}.config", "w+") as config_file:
+                    config_file.write(self.xid())
 
             while True:                                                             # o przerwaniu decyduje do_train()
                 if np.random.random()>epsilon:                                      # sterowanie wg reguły albo losowe
