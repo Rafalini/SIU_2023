@@ -20,7 +20,7 @@ class DqnSingle:
         self.EPS_DECAY=.99                  #*E spadek ε
         self.EPS_MIN=.05                    #*e ε minimalny
         self.REPLAY_MEM_SIZE_MAX=20_000     # M rozmiar cache decyzji
-        self.REPLAY_MEM_SIZE_MIN=4_00      # m zapełnienie warunkujące uczenie (4_000)
+        self.REPLAY_MEM_SIZE_MIN=4_000      # m zapełnienie warunkujące uczenie (4_000)
         self.MINIBATCH_SIZE=32              # B liczba decyzji w próbce uczącej
         self.TRAINING_BATCH_SIZE=self.MINIBATCH_SIZE // 4
         self.UPDATE_TARGET_EVERY=20         # U co ile treningów aktualizować model wolnozmienny
