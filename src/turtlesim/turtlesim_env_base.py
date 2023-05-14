@@ -65,7 +65,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
         # TODO STUDENCI załadowanie tras agentów do self.routes     DONE!
         self.routes = ScenarioReader(scenario_file=routes_fname,
                                      px_meter_ratio=self.px_meter_ratio
-                                    ).to_meters().get_routes()
+                                    ).get_routes()
 
         # utworzenie agentów-żółwi skojarzonych z trasami
         cnt = 0

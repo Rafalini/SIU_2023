@@ -22,7 +22,7 @@ class ScenarioReader:
 		"""
 		self.scenario_file = scenario_file
 		self.px_meter_ratio = px_meter_ratio
-		self.distance_unit = UNIT.PIXELS
+		self.distance_unit = UNIT.METERS
 		self.sequences = []
 		self._load_file()
 
@@ -35,12 +35,12 @@ class ScenarioReader:
 			self.sequences = [
 				Sequence(route_id=int(s[0]),
 						 agent_count=int(s[1]),
-						 xmin=int(s[2]),
-						 xmax=int(s[3]),
-						 ymin=int(s[4]),
-						 ymax=int(s[5]),
-						 xg=int(s[6]),
-						 yg=int(s[7])
+						 xmin=float(s[2]),
+						 xmax=float(s[3]),
+						 ymin=float(s[4]),
+						 ymax=float(s[5]),
+						 xg=float(s[6]),
+						 yg=float(s[7])
 						 ) for s in scenario
 			]
 
