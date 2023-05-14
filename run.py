@@ -1,4 +1,4 @@
-import random
+import sys
 import numpy as np
 from tensorflow import keras
 from copy import deepcopy
@@ -42,4 +42,7 @@ class SimulationRunner:
 
 
 if __name__ == "__main__":
-    SimulationRunner(model_path='models/model-E1000-1683836574955.h5').run_simulation()
+    if len(sys.argv) > 1:
+        SimulationRunner(model_path=sys.argv[1]).run_simulation()
+    else:
+        SimulationRunner(model_path='models/model-E200-13_05__11:50:40.h5').run_simulation()
