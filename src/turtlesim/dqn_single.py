@@ -27,7 +27,7 @@ class DqnSingle:
         self.EPISODES_MAX=4000              #*P liczba epizodów uczących
         self.CTL_DIM=6                      #   liczba możliwych akcji (tj. sterowań, decyzji)
         self.TRAIN_EVERY=4                  # T co ile kroków uczenie modelu szybkozmiennego
-        self.SAVE_MODEL_EVERY=50            #*  co ile epizodów zapisywać model # TODO STUDENCI
+        self.SAVE_MODEL_EVERY=250           #*  co ile epizodów zapisywać model # TODO STUDENCI
         random.seed(seed)
         np.random.seed(seed)
         self.model=None
