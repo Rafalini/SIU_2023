@@ -7,8 +7,9 @@ from src.turtlesim.turtlesim_env_single import TurtlesimEnvSingle
 
 
 class SimulationRunner:
-    def __init__(self, model_path: str):
+    def __init__(self, model_path: str, scenario_path: str):
         self.model = keras.models.load_model(model_path)
+        self.scenario_path = scenario_path
 
     def _decision(self, the_model, last, cur):
         inp = np.expand_dims(self._inp_stack(last, cur), axis=-1)
@@ -31,7 +32,7 @@ class SimulationRunner:
 
     def run_simulation(self):
         env = TurtlesimEnvSingle()
-        env.setup('data/scenario.csv', agent_cnt=1)
+        env.setup(self.scenario_path, agent_cnt=1)
         agents = env.reset()
         tname = list(agents.keys())[0]
         current_state = deepcopy(agents[tname].map)
@@ -42,7 +43,8 @@ class SimulationRunner:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        SimulationRunner(model_path=sys.argv[1]).run_simulation()
+    if len(sys.argv) > 2:
+        SimulationRunner(model_path=sys.argv[1], scenario_path=sys.argv[2]).run_simulation()
     else:
-        SimulationRunner(model_path='models/model-E200-13_05__11:50:40.h5').run_simulation()
+        print("Missing model or scenario path!. Usage: run.py <model_path> <scenario_path>")
+
