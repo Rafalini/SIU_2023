@@ -4,7 +4,7 @@ import sys
 if __name__ == "__main__":
 
     env = TurtlesimEnvSingle()  # utworzenie środowiska
-    env.setup('data/scenario.csv', agent_cnt=1)  # połączenie z symulatorem
+    env.setup('data/scenario_C_m.csv', agent_cnt=3)  # połączenie z symulatorem
     env.SPEED_FINE_RATE = -5.0  # zmiana wybranych parametrów środowiska
     agents = env.reset()  # ustawienie agenta
     tname = list(agents.keys())[0]  # 'lista agentów' do wytrenowania
