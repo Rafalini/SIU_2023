@@ -92,7 +92,7 @@ class DqnSingle:
 
             if save_model and episode%self.SAVE_MODEL_EVERY==0:                     # zapisuj co 250 epizodów gdy jest ustawiona flaga
                 # current_timestamp_ms = round(time() * 1000)
-                current_timestamp_ms = datetime.now().strftime("%d_%m__%H:%M:%S")
+                current_timestamp_ms = datetime.now().strftime("%d_%m__%H_%M_%S")
                 self.model.save(f"models/model-E{episode}-{current_timestamp_ms}.tf", save_format="tf")  # zapisz model w formacie h5
                 with open(f"models/model-E{episode}-{current_timestamp_ms}.config", "w+") as config_file:
                     config_file.write(self.xid())

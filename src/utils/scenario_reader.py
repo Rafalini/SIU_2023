@@ -22,7 +22,7 @@ class ScenarioReader:
 		"""
 		self.scenario_file = scenario_file
 		self.px_meter_ratio = px_meter_ratio
-		self.distance_unit = UNIT.METERS
+		self.distance_unit = UNIT.PIXELS
 		self.sequences = []
 		self._load_file()
 
