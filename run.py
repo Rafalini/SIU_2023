@@ -36,7 +36,6 @@ class SimulationRunner:
         agents = env.reset()
         tname = list(agents.keys())[0]
         current_state = deepcopy(agents[tname].map)
-        print(current_state)
         while not env.out_of_track:
             last_state = deepcopy(current_state)
             control = np.argmax(self._decision(self.model, last_state, current_state))
