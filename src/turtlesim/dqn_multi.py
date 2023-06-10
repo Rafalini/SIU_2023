@@ -5,7 +5,7 @@ import tensorflow as tf
 tf.get_logger().setLevel(3)
 from tensorflow import keras
 
-
+from datetime import datetime
 from keras.models import Sequential
 from keras.layers import *
 from .turtlesim_env_base import TurtlesimEnvBase
@@ -57,9 +57,11 @@ class DqnMulti(DqnSingle):
                 episode_rewards[episode]=0                                              # inicjalizacja nagród w tym epizodzie
                 agent_episode[tname]=episode                                            # przypisanie agenta do epizodu
                 if (episode+1)%self.SAVE_MODEL_EVERY==0 and save_model:
-                    self.model.save(f'models/{self.xid()}-{episode+1}.tf')              # zapisz bieżący model na dysku
-                if (episode+1)%self.SAVE_MODEL_EVERY==0 and save_state:                 # zapisz bieżący stan uczenia
-                    pickle.dump((episode,episode_rewards,epsilon,self.replay_memory),open(f'models/{self.xid()}.pkl','wb'))
+                    current_timestamp_ms = datetime.now().strftime("%d_%m__%H_%M_%S")
+
+                    self.model.save(f"models/model-M-{episode+1}-{current_timestamp_ms}.tf", save_format="tf")  # zapisz model w formacie h5
+                # if (episode+1)%self.SAVE_MODEL_EVERY==0 and save_state:                 # zapisz bieżący stan uczenia
+                #     pickle.dump((episode,episode_rewards,epsilon,self.replay_memory),open(f'models/{self.xid()}.pkl','wb'))
             to_restart=set()
             controls={}                                                                 # sterowania poszczególnych agentów
             for tname in self.env.agents:                                               # poruszamy każdym agentem
@@ -76,7 +78,7 @@ class DqnMulti(DqnSingle):
                 self.replay_memory.append((last_states[tname],current_states[tname],controls[tname],reward,new_state,done))
                 step_cnt+=1
                 if len(self.replay_memory)>=self.REPLAY_MEM_SIZE_MIN and step_cnt%self.TRAIN_EVERY==0:
-                    self.do_train(episode=episode)                                      # ucz, gdy zgromadzono dość próbek
+                    self.do_train()                                      # ucz, gdy zgromadzono dość próbek
                     train_cnt+=1
                     if train_cnt%self.UPDATE_TARGET_EVERY==0:
                         self.target_model.set_weights(self.model.get_weights())         # aktualizuj model pomocniczy
