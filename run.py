@@ -18,7 +18,7 @@ class SimulationRunner:
 
     # zakodowanie wybranego sterowania (0-5) na potrzeby środowiska: (prędkość,skręt)
     def _ctl_2_act(self, decision: int):  # prędkość\skręt    -.1rad 0 .1rad
-        v = .2  # 0.2                0   1   2
+        v = .2             # 0.2                0   1   2
         if decision >= 3:  # 0.4                3   4   5
             v = .4
         w = .25 * (decision % 3 - 1)
@@ -36,6 +36,7 @@ class SimulationRunner:
         agents = env.reset()
         tname = list(agents.keys())[0]
         current_state = deepcopy(agents[tname].map)
+        print(current_state)
         while not env.out_of_track:
             last_state = deepcopy(current_state)
             control = np.argmax(self._decision(self.model, last_state, current_state))

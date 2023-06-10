@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow import keras
 from copy import deepcopy
 from run import SimulationRunner
-from src.turtlesim.turtlesim_env_single import TurtlesimEnvSingle
+from src.turtlesim.turtlesim_env_multi import TurtlesimEnvMulti
 
 
 class SimulationRunnerMulti(SimulationRunner):
@@ -18,23 +18,23 @@ class SimulationRunnerMulti(SimulationRunner):
         return inp
 
     def run_simulation(self):
-        env = TurtlesimEnvSingle()
-        env.setup(self.scenario_path, agent_cnt=8)
+        env = TurtlesimEnvMulti()
+        env.setup(self.scenario_path, agent_cnt=4)
         agents = env.reset()
-        current_states = {}
-        for agent in agents.keys():
-            current_states[agent] = deepcopy(agents[agent].map)
 
         while not env.out_of_track:
+            turtleActionList = {}
             for agent in agents.keys():
+                current_states = {tname: agent.map for tname, agent in env.agents.items()}
                 last_state = deepcopy(current_states[agent])
                 control = np.argmax(self._decision(self.model, last_state, current_states[agent]))
-                current_states[agent], _, _ = env.step({agent: self._ctl_2_act(control)})  # noqa
+                turtleActionList[agent] = self._ctl_2_act(control)
+            env.step(turtleActionList)
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
         SimulationRunnerMulti(model_path=sys.argv[1], scenario_path=sys.argv[2]).run_simulation()
     else:
-        print("Missing model or scenario path!. Usage: run.py <model_path> <scenario_path>")
+        print("Missing model or scenario path!. Usage: runMulti.py <model_path> <scenario_path>")
 

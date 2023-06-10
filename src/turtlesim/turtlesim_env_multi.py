@@ -10,6 +10,7 @@ from .turtlesim_env_base import TurtlesimEnvBase
 class TurtlesimEnvMulti(TurtlesimEnvBase):
     def __init__(self):
         super().__init__()
+        self.out_of_track = False
 
     def setup(self, routes_fname: str, agent_cnt=None):
         super().setup(routes_fname, agent_cnt)
@@ -26,6 +27,7 @@ class TurtlesimEnvMulti(TurtlesimEnvBase):
 
     def step(self, actions, realtime=False):  # {id_żółwia:(prędkość,skręt)}
         # pozycja PRZED krokiem sterowania
+        self.out_of_track
         for tname, action in actions.items():
             agent = self.agents[tname]
             agent.step_sum += 1
@@ -91,6 +93,7 @@ class TurtlesimEnvMulti(TurtlesimEnvBase):
             r3 = self.DIST_RWRD_RATE * (self.agents[tname].fd - fd1)  # nagroda za zbliżenie się do celu
             r4 = 0
             if abs(fx1) + abs(fy1) < .01 and fa1 == 1:  # wylądowaliśmy poza trasą
+                self.out_of_track = True
                 r4 = self.OUT_OF_TRACK_FINE
                 done = True
             map = self.get_map(tname)
