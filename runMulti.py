@@ -21,16 +21,17 @@ class SimulationRunnerMulti(SimulationRunner):
         env = TurtlesimEnvMulti()
         env.setup(self.scenario_path, agent_cnt=4)
         agents = env.reset()
+        current_states = {tname: agent.map for tname, agent in env.agents.items()}
 
         while not env.out_of_track:
             turtleActionList = {}
             for agent in agents.keys():
-                current_states = {tname: agent.map for tname, agent in env.agents.items()}
+                # current_states = {tname: agent.map for tname, agent in env.agents.items()}
                 last_state = deepcopy(current_states[agent])
                 control = np.argmax(self._decision(self.model, last_state, current_states[agent]))
                 turtleActionList[agent] = self._ctl_2_act(control)
-            env.step(turtleActionList)
-
+            current_states = env.step(turtleActionList)
+            current_states = {tname: current_states[tname][0] for tname in current_states}
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
