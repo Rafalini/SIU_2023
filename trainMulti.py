@@ -8,7 +8,7 @@ if __name__ == "__main__":
     env.PI_BY = 3                                       # zmiana wybranych parametrów środowiska
     env.SPEED_FINE_RATE = -5.0                          # zmiana wybranych parametrów środowiska
     env.DETECT_COLLISION = True
-    env.setup('./data/scenario_C_m.csv')                # połączenie z symulatorem
+    env.setup('./data/scenario_C_m.csv', agent_cnt=4)                # połączenie z symulatorem
     agents = env.reset()                                # ustawienie agenta
     dqnm = DqnMulti(env)                                # utworzenie klasy uczącej
 
