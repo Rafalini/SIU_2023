@@ -14,6 +14,7 @@ from .dqn_single import DqnSingle
 class DqnMulti(DqnSingle):
     def __init__(self,env:TurtlesimEnvBase,id_prefix='dqnm',seed=42):
         super().__init__(env,id_prefix,seed)
+        self.SAVE_MODEL_EVERY = 250
     # złożenie dwóch rastrów sytuacji aktualnej i poprzedniej w tensor 5x5x10 wejścia do sieci
     def inp_stack(_,last,cur):
         # fa,fd,fc+1,fp+1 ORAZ fo doklejone na końcu
@@ -49,6 +50,14 @@ class DqnMulti(DqnSingle):
         episode=len(self.env.agents)-1                                                  # indeks ost. epizodu
         to_restart=set()                                                                # agenty do reaktywacji
         while episode<self.EPISODES_MAX:                                                # ucz w epizodach treningowych
+            print(f"Episode: {episode}")
+            if episode%self.SAVE_MODEL_EVERY==0:                     # zapisuj co 250 epizodów gdy jest ustawiona flaga
+                # current_timestamp_ms = round(time() * 1000)
+                current_timestamp_ms = datetime.now().strftime("%d_%m__%H_%M_%S")
+                self.model.save(f"models/model-E{episode}-{current_timestamp_ms}.tf", save_format="tf")  # zapisz model w formacie h5
+                with open(f"models/model-E{episode}-{current_timestamp_ms}.config", "w+") as config_file:
+                    config_file.write(self.xid())
+
             self.env.reset(to_restart,['random' for i in to_restart])                   # inicjalizacja wybranych
             for tname in to_restart:                                                    # odczytanie sytuacji
                 current_states[tname]=self.env.agents[tname].map                        # początkowa sytuacja

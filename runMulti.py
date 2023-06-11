@@ -20,18 +20,19 @@ class SimulationRunnerMulti(SimulationRunner):
     def run_simulation(self):
         env = TurtlesimEnvMulti()
         env.setup(self.scenario_path, agent_cnt=4)
-        agents = env.reset()
-        current_states = {tname: agent.map for tname, agent in env.agents.items()}
+        env.reset()
+        current_states = {tname: agent.map for tname, agent in env.agents.items()}  # aktualne sytuacje
+        last_states = {tname: agent.map for tname, agent in env.agents.items()}
 
         while not env.out_of_track:
-            turtleActionList = {}
-            for agent in agents.keys():
-                # current_states = {tname: agent.map for tname, agent in env.agents.items()}
-                last_state = deepcopy(current_states[agent])
-                control = np.argmax(self._decision(self.model, last_state, current_states[agent]))
-                turtleActionList[agent] = self._ctl_2_act(control)
-            current_states = env.step(turtleActionList)
-            current_states = {tname: current_states[tname][0] for tname in current_states}
+            controls = {}
+            for tname in env.agents:
+                controls[tname] = np.argmax(self._decision(self.model, last_states[tname], current_states[tname]))
+            actions = {tname: self._ctl_2_act(control) for tname, control in controls.items()}
+            scene = env.step(actions)
+            for tname, (new_state, reward, done) in scene.items():
+                last_states[tname] = current_states[tname]
+                current_states[tname] = new_state
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
