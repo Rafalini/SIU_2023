@@ -65,7 +65,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
         # TODO STUDENCI załadowanie tras agentów do self.routes     DONE!
         self.routes = ScenarioReader(scenario_file=routes_fname,
                                      px_meter_ratio=self.px_meter_ratio
-                                    ).get_routes()
+                                    ).to_meters().get_routes()
 
         # utworzenie agentów-żółwi skojarzonych z trasami
         cnt = 0
@@ -139,6 +139,7 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
             else:
                 sec_id = sections[tidx]
             # przypisanie sekcji, w której się odrodzi
+            print(sec_id)
             section = self.routes[agent.route][sec_id]
             agent.goal_loc = Pose(x=section[5], y=section[6])  # pierwszy cel
             # próba ulokowania agenta we wskazanym obszarze i jednocześnie na drodze (niezerowy wektor zalecanej prędkości)

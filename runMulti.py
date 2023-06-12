@@ -14,7 +14,7 @@ class SimulationRunnerMulti(SimulationRunner):
     # złożenie dwóch rastrów sytuacji aktualnej i poprzedniej w tensor 5x5x10 wejścia do sieci
     def _inp_stack(self, last, cur):
         # fa,fd,fc+1,fp+1 - z wyjścia get_map - BEZ 2 POCZ. WARTOŚCI (zalecana prędkość w ukł. odniesienia planszy)
-        inp = np.stack([cur[2], cur[3], cur[4], cur[5], cur[6], last[2], last[3], last[4], last[5], last[6]], axis=-1)
+        inp = np.stack([cur[2],cur[3],cur[4],cur[5],last[2],last[3],last[4],last[5],cur[6],last[6]], axis=-1)
         return inp
 
     def run_simulation(self):
