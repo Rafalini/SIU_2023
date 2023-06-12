@@ -139,7 +139,6 @@ class TurtlesimEnvBase(metaclass=abc.ABCMeta):
             else:
                 sec_id = sections[tidx]
             # przypisanie sekcji, w której się odrodzi
-            print(sec_id)
             section = self.routes[agent.route][sec_id]
             agent.goal_loc = Pose(x=section[5], y=section[6])  # pierwszy cel
             # próba ulokowania agenta we wskazanym obszarze i jednocześnie na drodze (niezerowy wektor zalecanej prędkości)
