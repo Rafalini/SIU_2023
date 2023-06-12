@@ -15,6 +15,7 @@ class DqnMulti(DqnSingle):
     def __init__(self,env:TurtlesimEnvBase,id_prefix='dqnm',seed=42):
         super().__init__(env,id_prefix,seed)
         self.SAVE_MODEL_EVERY = 250
+        self.NEXT_SAVE_MODEL = self.SAVE_MODEL_EVERY
     # złożenie dwóch rastrów sytuacji aktualnej i poprzedniej w tensor 5x5x10 wejścia do sieci
     def inp_stack(_,last,cur):
         # fa,fd,fc+1,fp+1 ORAZ fo doklejone na końcu
@@ -51,12 +52,12 @@ class DqnMulti(DqnSingle):
         to_restart=set()                                                                # agenty do reaktywacji
         while episode<self.EPISODES_MAX:                                                # ucz w epizodach treningowych
             print(f"Episode: {episode}")
-            if episode%self.SAVE_MODEL_EVERY==0:                     # zapisuj co 250 epizodów gdy jest ustawiona flaga
-                # current_timestamp_ms = round(time() * 1000)
+            if episode > self.NEXT_SAVE_MODEL:  # zapisuj co 250 epizodów gdy jest ustawiona flaga
                 current_timestamp_ms = datetime.now().strftime("%d_%m__%H_%M_%S")
-                self.model.save(f"models/model-E{episode}-{current_timestamp_ms}.tf", save_format="tf")  # zapisz model w formacie h5
+                self.model.save(f"models/model-M{episode}-{current_timestamp_ms}.tf", save_format="tf")  # zapisz model w formacie h5
                 with open(f"models/model-E{episode}-{current_timestamp_ms}.config", "w+") as config_file:
                     config_file.write(self.xid())
+                self.NEXT_SAVE_MODEL += self.SAVE_MODEL_EVERY
 
             self.env.reset(to_restart,['random' for i in to_restart])                   # inicjalizacja wybranych
             for tname in to_restart:                                                    # odczytanie sytuacji
@@ -65,12 +66,6 @@ class DqnMulti(DqnSingle):
                 episode+=1                                                              # dla niego to nowy epizod
                 episode_rewards[episode]=0                                              # inicjalizacja nagród w tym epizodzie
                 agent_episode[tname]=episode                                            # przypisanie agenta do epizodu
-                if (episode+1)%self.SAVE_MODEL_EVERY==0 and save_model:
-                    current_timestamp_ms = datetime.now().strftime("%d_%m__%H_%M_%S")
-
-                    self.model.save(f"models/model-M-{episode+1}-{current_timestamp_ms}.tf", save_format="tf")  # zapisz model w formacie h5
-                # if (episode+1)%self.SAVE_MODEL_EVERY==0 and save_state:                 # zapisz bieżący stan uczenia
-                #     pickle.dump((episode,episode_rewards,epsilon,self.replay_memory),open(f'models/{self.xid()}.pkl','wb'))
             to_restart=set()
             controls={}                                                                 # sterowania poszczególnych agentów
             for tname in self.env.agents:                                               # poruszamy każdym agentem
