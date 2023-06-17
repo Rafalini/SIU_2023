@@ -1,4 +1,4 @@
-![image](https://github.com/Rafalini/SIU_2023/assets/44322872/100a4afa-8bce-4857-a6a4-1c9b2711eee3)# Turtlesim simulation
+# Turtlesim simulation
 
 Python based reinforced learning enviroment. Aim of this project was to implement reinforced learning alghoritms using python and test them in visual way. 
 
