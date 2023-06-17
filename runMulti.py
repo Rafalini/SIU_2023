@@ -19,7 +19,7 @@ class SimulationRunnerMulti(SimulationRunner):
 
     def run_simulation(self):
         env = TurtlesimEnvMulti()
-        env.setup(self.scenario_path, agent_cnt=4)
+        env.setup(self.scenario_path, agent_cnt=8)
         env.reset()
         current_states = {tname: agent.map for tname, agent in env.agents.items()}  # aktualne sytuacje
         last_states = {tname: agent.map for tname, agent in env.agents.items()}
