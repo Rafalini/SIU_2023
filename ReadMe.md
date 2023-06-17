@@ -1,8 +1,11 @@
-# Turtlesim simulation
+![image](https://github.com/Rafalini/SIU_2023/assets/44322872/100a4afa-8bce-4857-a6a4-1c9b2711eee3)# Turtlesim simulation
 
 Python based reinforced learning enviroment. Aim of this project was to implement reinforced learning alghoritms using python and test them in visual way. 
 
 Turtlesim allows to graphically simulate turtle movement on route.
+
+![image](https://github.com/Rafalini/SIU_2023/assets/44322872/476b87d4-0364-4e0a-a343-5f460e36f09e)
+
 
 ## Repository contents
 
@@ -64,7 +67,12 @@ $ pip install tensorflow
 ```
 cp ./static/board_A.png /roads.png
 ```
-4. Begin training or run trained model:
+4. Run simulation enviroment in one terminal:
+```
+roslaunch turtlesim siu.launch
+```
+4. Begin training or run trained model using provided scripts in next terminal:
+[turtles.webm](https://github.com/Rafalini/SIU_2023/assets/44322872/423945af-7b83-4a87-9172-036e056fedb3)
 
 
 
